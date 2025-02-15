@@ -1,0 +1,5 @@
+- repo init
+- cloning
+- CRA template npx
+- libs install
+- configuration 
