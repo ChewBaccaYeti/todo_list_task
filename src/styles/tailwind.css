@@ -13,3 +13,21 @@
 /* Stop purging. */
 
 /* Your own custom utilities */
+@layer utilities {
+    .custom-scroll::-webkit-scrollbar {
+      width: 12px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: white;
+      border-radius: 10px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background-color: #4f46e5;
+      border-radius: 10px;
+      border: 2px solid white;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background-color: #6d62d2;
+    }
+  }
+  
