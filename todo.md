@@ -3,3 +3,11 @@
 - CRA template npx
 - libs install
 - configuration 
+- component creation
+- tailwind custom styles
+- buttons and input logic
+- styling
+- manipulation with tasks
+- server to launch 
+- backend logic: routes for endpoints, contollers for logic control
+- error handling by React-toastify

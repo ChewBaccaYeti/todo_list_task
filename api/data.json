@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1739701295194,
+    "title": "Привет.",
+    "completed": true
+  },
+  {
+    "id": 1739713601940,
+    "title": "That's your ToDo web-app!",
+    "completed": false
+  },
+  {
+    "id": 1739716444102,
+    "title": "Sup! I was redacted.",
+    "completed": true
+  }
+]
