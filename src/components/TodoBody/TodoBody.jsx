@@ -1,96 +1,114 @@
 import { useState, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const TodoBody = () => {
-    const [task, setTask] = useState("");  // track task input value
-    const [tasks, setTasks] = useState([]); // store tasks
-    const [editingTaskId, setEditingTaskId] = useState(null); // Track which task is being edited
-    const [editingTitle, setEditingTitle] = useState(""); // Temporary title during editing
+    const [task, setTask] = useState("");
+    const [tasks, setTasks] = useState([]);
+    const [editingTaskId, setEditingTaskId] = useState(null);
+    const [editingTitle, setEditingTitle] = useState("");
 
-    // Fetch tasks from backend when the component is mounted
     useEffect(() => {
         const fetchTasks = async () => {
-            const response = await fetch("http://localhost:5000/todos");
-            const data = await response.json();
-            setTasks(data); // Set tasks from the server
+            try {
+                const response = await fetch("http://localhost:5000/todos");
+                if (!response.ok) throw new Error("Failed to fetch tasks.");
+                const data = await response.json();
+                setTasks(data);
+            } catch (error) {
+                toast.error(`Error: ${error.message}`);
+            }
         };
         fetchTasks();
-    }, []); // Empty dependency array means this runs once when component mounts
+    }, []);
 
-    // POST
     const addTask = async () => {
-        if (task.trim()) { // if input is not empty
-            const newTask = { title: task }; // Create task object
+        if (!task.trim()) {
+            toast.warn("Please enter a task before adding!");
+            return;
+        }
+
+        try {
             const response = await fetch("http://localhost:5000/todos", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(newTask),
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ title: task }),
             });
 
+            if (!response.ok) throw new Error("Failed to add task.");
             const createdTask = await response.json();
-            setTasks([...tasks, createdTask]); // setState
-            setTask(""); // Clear input field
+            setTasks([...tasks, createdTask]);
+            setTask("");
+            toast.success("Task added successfully.");
+        } catch (error) {
+            toast.error(`Error: ${error.message}`);
         }
     };
 
-    // PUT - toggle completion
     const toggleTaskCompletion = async (id) => {
-        const updatedTasks = tasks.map((task) =>
-            task.id === id ? { ...task, completed: !task.completed } : task
-        );
-        setTasks(updatedTasks);
+        try {
+            const taskToUpdate = tasks.find(task => task.id === id);
+            if (!taskToUpdate) throw new Error("Task not found.");
 
-        await fetch(`http://localhost:5000/todos/${id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ completed: !tasks.find(task => task.id === id).completed }),
-        });
+            const response = await fetch(`http://localhost:5000/todos/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ completed: !taskToUpdate.completed }),
+            });
+
+            if (!response.ok) throw new Error("Failed to update task status.");
+            setTasks(tasks.map(task => task.id === id ? { ...task, completed: !task.completed } : task));
+            toast.info("Task status updated.");
+        } catch (error) {
+            toast.error(`Error: ${error.message}`);
+        }
     };
 
-    // PUT - update title
     const updateTaskTitle = async (id, newTitle) => {
-        if (!newTitle.trim()) return;
+        if (!newTitle.trim()) {
+            toast.warn("Task title cannot be empty!");
+            return;
+        }
 
-        const updatedTasks = tasks.map((task) =>
-            task.id === id ? { ...task, title: newTitle } : task
-        );
-        setTasks(updatedTasks);
-        setEditingTaskId(null);
+        try {
+            const response = await fetch(`http://localhost:5000/todos/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ title: newTitle }),
+            });
 
-        await fetch(`http://localhost:5000/todos/${id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ title: newTitle }),
-        });
+            if (!response.ok) throw new Error("Failed to update task title.");
+            setTasks(tasks.map(task => task.id === id ? { ...task, title: newTitle } : task));
+            setEditingTaskId(null);
+            toast.success("Task updated successfully.");
+        } catch (error) {
+            toast.error(`Error: ${error.message}`);
+        }
     };
 
-    // DELETE
     const deleteTask = async (id) => {
-        const response = await fetch(`http://localhost:5000/todos/${id}`, {
-            method: "DELETE",
-        });
+        try {
+            const response = await fetch(`http://localhost:5000/todos/${id}`, {
+                method: "DELETE",
+            });
 
-        const data = await response.json();
-
-        if (data.message === "Todo deleted") {
+            const data = await response.json();
+            if (data.message !== "Todo deleted") throw new Error("Failed to delete task.");
             setTasks(tasks.filter((task) => task.id !== id));
-        } else {
-            console.error("Deletion error:", data.message);
+            toast.success("Task deleted successfully.");
+        } catch (error) {
+            toast.error(`Error: ${error.message}`);
         }
     };
 
     return (
         <section className="flex flex-col items-center justify-center gap-6 m-12 p-12 rounded-xl border-1 border-solid border-red-300 bg-gradient-to-br from-gray-800 via-indigo-700 to-gray-300">
+            <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop closeOnClick pauseOnHover draggable />
             <h1 className="text-5xl">Add Task</h1>
             <div className="flex flex-row items-center justify-center gap-6 transition-all duration-300">
                 <input type="text"
-                    value={task} // bind input value to state
-                    onChange={(e) => setTask(e.target.value)} // update state on change
+                    value={task}
+                    onChange={(e) => setTask(e.target.value)}
                     className="border border-red-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-700" />
                 <button className="flex items-center justify-center w-10 h-10 rounded-full bg-indigo-700 text-white transition-colors duration-300 hover:bg-indigo-500"
                     onClick={addTask}>
@@ -100,7 +118,7 @@ const TodoBody = () => {
             <ul className="custom-scroll flex flex-col items-start justify-start gap-4 w-full max-h-60 overflow-y-auto">
                 {tasks.map((task) => (
                     <li
-                        key={task.id} // Use unique ID as key to map data
+                        key={task.id}
                         className={`flex items-center justify-between w-9/12 p-4 rounded-lg shadow-lg duration-300 ${task.completed
                             ? "bg-red-300 hover:bg-red-500 text-gray-200"
                             : "bg-teal-700 hover:bg-teal-500"

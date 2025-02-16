@@ -1,5 +1,45 @@
 # cra-template-tailwindcss-typescript
 
+Hi! I am using a template, and a description of it can be found below.
+
+Now, I'll guide you on how to clone my repo and run the application on your local machine.
+
+First, open your terminal (Git Bash) directlyy in your development environment (VSCode) and run the following command:
+
+```bash
+git clone https://github.com/ChewBaccaYeti/todo_list_task.git
+```
+
+After cloning the repo, navigate to the project directory by running:
+
+```bash
+cd todo_list_task 
+```
+
+If you didn't open Git Bash from within VSCode, you can run the following command to open VSCode:
+
+SKIP THIS IF YOU ARE IN VSCODE
+
+```bash
+code .
+```
+
+Next, run the following command to install the dependencies:
+
+```bash
+npm install
+```
+
+After the installation is complete, run the application with:
+
+```bash
+npm run full
+```
+
+This command uses concurrently to run multiple scripts at the same tiime, and nodemon is used for hot-reloading on the server.
+
+<--TEMPLATE DESCRIPTION-->
+
 A streamlined [Tailwind CSS v3.1](https://tailwindcss.com) template for [Create React App](https://github.com/facebook/create-react-app) in [TypeScript](https://www.typescriptlang.org/).
 
 > This template installs and sets up [Tailwind CSS](https://tailwindcss.com) with TypeScript support.

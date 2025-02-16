@@ -9,5 +9,6 @@
 - styling
 - manipulation with tasks
 - server to launch 
-- backend logic: routes for endpoints, contollers for logic control
+- backend logic: routes for endpoints, controllers for logic control
 - error handling by React-toastify
+- comments and documentation for launch instruction
