@@ -36,7 +36,11 @@ After the installation is complete, run the application with:
 npm run full
 ```
 
-This command uses concurrently to run multiple scripts at the same tiime, and nodemon is used for hot-reloading on the server.
+This command uses concurrently to run multiple scripts at the same time, and nodemon is used for hot-reloading on the server.
+
+!Important reminder for project - click twice on task title to redact it
+
+I used POSTMAN to check every http request
 
 <--TEMPLATE DESCRIPTION-->
 
